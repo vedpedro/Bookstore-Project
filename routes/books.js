@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
       searchOptions: req.query
     })
   } catch {
-    res.redirect('/')
+    res.redirect('/') // Redirect to the previous page instead of showing a Server status error and message
   }
 })
 
