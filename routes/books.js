@@ -5,8 +5,8 @@ const path = require('path');
 const fs = require('fs');
 const Book = require('../models/book');
 const Author = require('../models/author');
-const uploadPath = path.join('public', Book.coverImageBasePath); 
-const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif']; // accepted formats
+const uploadPath = path.join('public', Book.coverImageBasePath); // join paths to files in public folder
+const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']; // accepted img formats
 const upload = multer({
   dest: uploadPath,
   fileFilter: (req, file, callback) => {
@@ -43,14 +43,14 @@ router.get('/new', async (req, res) => {
 })
 
 // Create Book Route
-router.post('/', upload.single('cover'), async (req, res) => {
+router.post('/', upload.single('cover'), async (req, res) => {  // Multer, we are importing a single file with the name of Cover, do the work behind the scenes
   const fileName = req.file != null ? req.file.filename : null
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
-    publishDate: new Date(req.body.publishDate),
+    publishDate: new Date(req.body.publishDate),    //will return string
     pageCount: req.body.pageCount,
-    coverImageName: fileName,
+    coverImageName: fileName,    // if we upload a file it will be equal to the filename, otherwise null
     description: req.body.description
   })
 
@@ -72,7 +72,7 @@ function removeBookCover(fileName) {
   })
 }
 
-async function renderNewPage(res, book, hasError = false) {
+async function renderNewPage(res, book, hasError = false) {     //default to no error
   try {
     const authors = await Author.find({})
     const params = {

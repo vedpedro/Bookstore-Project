@@ -21,7 +21,7 @@ app.use(expressLayouts);
 app.use(express.static('public'));
 
 // Mongoose Connection
-const connectionURL = 'mongodb://127.0.0.1:27017/mybrary';
+const connectionURL = 'mongodb://127.0.0.1:27017/my-library';
 
 mongoose.connect(connectionURL, {
     useNewUrlParser: true,
