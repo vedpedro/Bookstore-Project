@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Author = require('../models/author');
+const sendWelcomeMail = require('../emails/account');
 
 // All Authors Route
 router.get('/', async (req, res) => {
@@ -29,11 +30,12 @@ router.get('/new', (req, res) => {
 // Create Author Route with Async/Await
 router.post('/', async (req, res) => {
   const author = new Author({
-    name: req.body.name
+    name: req.body.name,
+    email: req.body.email
   });
     try {
         const newAuthor = await author.save()
-        //res.redirect(`authors/${newAuthor.id}`);
+        sendWelcomeMail(author.email, author.name); // sends email when user is created
         res.redirect('authors');
     } catch {
         res.render('authors/new', {
