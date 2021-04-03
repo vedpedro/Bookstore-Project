@@ -56,4 +56,42 @@ router.post('/', async (req, res) => {
   // })
 });
 
+
+// Get Single Author
+router.get('/:id', (req, res) => {
+  res.send('Show Author ' + req.params.id);
+});
+
+router.get('/:id/edit', async (req, res) => {
+  try {
+      const author = Author.findById(req.params.id);
+      res.render('authors/edit', { author: new Author() });
+  } catch {
+      res.redirect('/authors');
+  }
+  
+});
+
+router.put('/:id', async (req, res) => {
+  const author = new Author({
+    name: req.body.name,
+    email: req.body.email
+  });
+    try {
+        author = await Author.findById(req.params.id);
+        await author.save()
+        sendWelcomeMail(author.email, author.name); // sends email when user is created
+        res.redirect(`authors/${authors.id}`);
+    } catch {
+        res.render('authors/new', {
+            author: author,
+            errorMessage: 'Error creating Author'
+      })
+    }
+});
+
+router.delete('/:id', (req, res) => {
+  res.send('Delete Author ' + req.params.id);
+});
+
 module.exports = router;

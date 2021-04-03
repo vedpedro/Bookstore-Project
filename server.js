@@ -3,6 +3,10 @@ const app = express();
 const expressLayouts = require('express-ejs-layouts');
 require('./db/mongoose');
 
+// Update and Delete from browser
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
 
 const indexRouter = require('./routes/index');
 const authorRouter = require('./routes/authors');
