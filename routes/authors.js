@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Author = require('../models/author');
+const Book = require('../models/book');
 const sendWelcomeMail = require('../emails/account');
 
 // All Authors Route
@@ -58,8 +59,18 @@ router.post('/', async (req, res) => {
 
 
 // Get Single Author
-router.get('/:id', (req, res) => {
-  res.send('Show Author ' + req.params.id);
+router.get('/:id', async (req, res) => {
+  //res.send('Show Author ' + req.params.id);
+  try{
+    const author = await Author.findById(req.params.id);
+    const books = await Book.find({ author: author.id }).exec();
+    res.render('authors/show',{
+      author: author,
+      booksByAuthor: books
+    });
+  } catch(err) {
+   console.log(err);
+  }
 });
 
 router.get('/:id/edit', async (req, res) => {
@@ -90,8 +101,19 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', (req, res) => {
-  res.send('Delete Author ' + req.params.id);
+router.delete('/:id', async (req, res) => {
+  let author
+  try {
+    author = await Author.findById(req.params.id);
+    await author.remove();
+    res.redirect('/authors');
+  } catch {
+    if (author == null) {
+      res.redirect('/')
+    } else {
+      res.redirect(`/authors/${authors.id}`)
+    }
+  }
 });
 
 module.exports = router;
